@@ -3,15 +3,15 @@
         {
             "name": "Win32",
             "includePath": [
-                "C:\\Users\\rvisgdc\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\cores\\esp8266"
+                "C:\\Users\\DCarter\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\cores\\esp8266"
                 
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": false,
                 "path": [
-                    "C:\\Users\\rvisgdc\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0",
+                    "C:\\Users\\DCarter\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0",
                     "C:\\Program Files (x86)\\Arduino\\libraries",
-                    "C:\\Users\\rvisgdc\\Documents\\Arduino\\libraries\\RingBuf"
+                    "C:\\Users\\DCarter\\Documents\\Arduino\\libraries\\RingBuf"
                 ]
             },
             "intelliSenseMode": "msvc-x64"

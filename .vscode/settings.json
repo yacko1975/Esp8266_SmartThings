@@ -4,6 +4,8 @@
         "ip_frag.c": "cpp",
         "wlif.c": "cpp",
         "ard_spi.c": "cpp",
-        "core_esp8266_wiring.c": "cpp"
+        "core_esp8266_wiring.c": "cpp",
+        "libc_replacements.c": "cpp",
+        "print_funcs.c": "cpp"
     }
 }

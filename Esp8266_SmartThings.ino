@@ -26,12 +26,12 @@
  *  for the specific language governing permissions and limitations under the License.
  */
 
-#define WLAN_SSID "XXXX"
-#define WLAN_PASS "XXXX"
+#define WLAN_SSID "CarterNet"
+#define WLAN_PASS "cat-fish"
 #define ws_Port 8151
 
 //Enable/disable functions
-//#define Enable_Wifi
+#define Enable_Wifi 1
 
 AsyncWebServer server(ws_Port);
 
@@ -70,32 +70,53 @@ void setup(void)
   Serial.println(ws_Port);
 
   server.on("/refresh", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    char *respData;
     Serial.println("Received Refresh");
     Serial.print("Arguments Received:");
     int params = request->params();
 
     Serial.println(params);
 
-    for (int i = 0; i < params; i++)
+    // for (int i = 0; i < params; i++)
+    // {
+    //   AsyncWebParameter *p = request->getParam(i);
+    //   if (p->isFile())
+    //   {
+    //     Serial.printf("_FILE[%s]: %s, size: %u\n", p->name().c_str(), p->value().c_str(), p->size());
+    //   }
+    //   else if (p->isPost())
+    //   {
+    //     Serial.printf("_POST[%s]: %s\n", p->name().c_str(), p->value().c_str());
+    //   }
+    //   else
+    //   {
+    //     Serial.printf("_GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
+    //   }
+    // }
+
+    if (resBuff->isEmpty(resBuff))
     {
-      AsyncWebParameter *p = request->getParam(i);
-      if (p->isFile())
+      respData = (char *)"mo=0";
+    }
+    else
+    {
+      resBuff->pull(resBuff, &respData);
+      if (!resBuff->isEmpty(resBuff))
       {
-        Serial.printf("_FILE[%s]: %s, size: %u\n", p->name().c_str(), p->value().c_str(), p->size());
-      }
-      else if (p->isPost())
-      {
-        Serial.printf("_POST[%s]: %s\n", p->name().c_str(), p->value().c_str());
-      }
-      else
-      {
-        Serial.printf("_GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
+        strcat(respData, "&mo=1");
       }
     }
 
-    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "refresh:success");
+    Serial.print("Size of Response - ");
+    Serial.print(sizeof(respData));
+    Serial.printf("%s \n", respData);
+
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", respData);
     response->addHeader("Server", "ESP Async Web Server");
     request->send(response);
+
+    Serial.println("Transmission Complete \n");
+
   });
 
   server.on("/test", HTTP_ANY, [](AsyncWebServerRequest *request) {
@@ -124,7 +145,7 @@ void setup(void)
 
     delay(2000);
 
-    clientReqeust(param);
+    //clientReqeust(param);
   });
 
   server.onNotFound(handleNotFound);
@@ -134,24 +155,24 @@ void setup(void)
 #endif
 }
 
-#ifdef Enable_Wifi
-void clientReqeust(char *param)
-{
-  Serial.println("Connection to Hub");
-  if (hClient.begin(stHubIP.toString(), ws_Port, "/"))
-  {
-    hClient.addHeader("Host", WiFi.localIP().toString() + ws_Port);
-    hClient.addHeader("Content-Type", "text/plain");
+// #ifdef Enable_Wifi
+// void clientReqeust(char *param)
+// {
+//   Serial.println("Connection to Hub");
+//   if (hClient.begin(stHubIP.toString(), ws_Port, "/"))
+//   {
+//     hClient.addHeader("Host", WiFi.localIP().toString() + ws_Port);
+//     hClient.addHeader("Content-Type", "text/plain");
 
 
-        int httpCode = hClient.POST(param);
-    Serial.println("http code" + (String)httpCode);
-    Serial.println("Response: " + hClient.getString());
-    hClient.end();
-  }
-}
+//         int httpCode = hClient.POST(param);
+//     Serial.println("http code" + (String)httpCode);
+//     Serial.println("Response: " + hClient.getString());
+//     hClient.end();
+//   }
+// }
 
-#endif
+// #endif
 
 void handleNotFound(AsyncWebServerRequest *request)
 {
@@ -161,26 +182,26 @@ void handleNotFound(AsyncWebServerRequest *request)
   request->send(404);
 }
 
-void printRingbuff()
-{
-  char *response;
-  int itemID = 0;
- unsigned int iCnt = resBuff->numElements(resBuff);
+// void printRingbuff()
+// {
+//   char *response;
+//   int itemID = 0;
+//  unsigned int iCnt = resBuff->numElements(resBuff);
 
-  Serial.printf("Ringbuff contains %i elements \n", iCnt);
+//   Serial.printf("Ringbuff contains %i elements \n", iCnt);
 
-  Serial.println("\n______Dumping contents of ring buffer_______");
+//   Serial.println("\n______Dumping contents of ring buffer_______");
 
-  while (resBuff->pull(resBuff, &response))
-  {
-    Serial.printf("Value of %i '", itemID);
-    Serial.printf("%s'\n",response);
+//   while (resBuff->pull(resBuff, &response))
+//   {
+//     Serial.printf("Value of %i '", itemID);
+//     Serial.printf("%s'\n",response);
 
-    itemID++;
-  }
+//     itemID++;
+//   }
 
-  Serial.println("\nEnd of Buffer");
-}
+//   Serial.println("\nEnd of Buffer");
+// }
 
 char *createData()
 {
@@ -190,20 +211,20 @@ char *createData()
   case 0:
   case 4:
   case 8:
-    return "id=HHH&ct=HHHHHHHH&st=1&bl=1&te=999.9&hu=999&lc=99999&lr=99&lt=HHHHHHHH&li=1";
+    return (char *)"id=HHH&ct=HHHHHHHH&st=1&bl=1&te=999.9&hu=999&lc=99999&lr=99&lt=HHHHHHHH&li=1";
     break;
   case 1:
   case 5:
   case 9:
-    return "id=HHH&ct=HHHHHHHH&st=1&bl=1&te=999.9&hu=100";
+    return (char *)"id=HHH&ct=HHHHHHHH&st=1&bl=1&te=999.9&hu=100";
     break;
   case 2:
   case 6:
   case 10:
-    return "id=HHH&ct=HHHHHHHH&st=1&bl=1&te=999.9&hu=100&ws=999.9";
+    return (char *)"id=HHH&ct=HHHHHHHH&st=1&bl=1&te=999.9&hu=100&ws=999.9";
     break;
   default:
-    return "id=HHH&ct=HHHHHHHH&st=1&bl=1&wd=AAA&ra=999.9&rl=HHHHHHHH";
+    return (char *)"id=HHH&ct=HHHHHHHH&st=1&bl=1&wd=AAA&ra=999.9&rl=HHHHHHHH";
   }
 }
 
@@ -211,31 +232,36 @@ void loop(void)
 {
   char *tempBuff;
 
-Serial.printf("\nStart Heap: %i\n", ESP.getFreeHeap());
+//Serial.printf("\nStart Heap: %i\n", ESP.getFreeHeap());
 
-  delay(random(100,2000));
+  //delay(random(100,2000));
 
-  if (micros() % 3 == 0)
+  if (micros() % 36 == 0)
   {
+    Serial.println("Preparing to add entry");
     if (resBuff->isFull(resBuff))
     {
+      Serial.println("Buff Full Popping top");
       //popping the top to get rid of it.
       resBuff->pull(resBuff, &tempBuff);
     }
+    Serial.println("Creating Data");
     tempBuff = createData();
+    Serial.println("Adding Data");    
     resBuff->add(resBuff, &tempBuff);
+    Serial.println("Add Complete");
   }
 
-  if (millis() % 45 == 0)
-  {
-    if (resBuff->isEmpty(resBuff))
-    {
-      Serial.println("Ring Buffer is currently empty");
-    }
-    else
-    {
-      printRingbuff();
-    }
-  }
-  Serial.printf("\nEnd Heap: %i\n",  ESP.getFreeHeap());
+  // if (millis() % 45 == 0)
+  // {
+  //   if (resBuff->isEmpty(resBuff))
+  //   {
+  //     Serial.println("Ring Buffer is currently empty");
+  //   }
+  //   else
+  //   {
+  //     printRingbuff();
+  //   }
+  // }
+  //Serial.printf("\nEnd Heap: %i\n",  ESP.getFreeHeap());
 }
