@@ -6,6 +6,8 @@
         "ard_spi.c": "cpp",
         "core_esp8266_wiring.c": "cpp",
         "libc_replacements.c": "cpp",
-        "print_funcs.c": "cpp"
+        "print_funcs.c": "cpp",
+        "printf-stdarg.c": "cpp",
+        "core_esp8266_noniso.c": "cpp"
     }
 }
